@@ -40,6 +40,23 @@ public class DriverApp {
         WebElement whoWeAre = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("menu-item-47")));
         whoWeAre.click();
 
+        // Find the Research button by aria-controls
+        WebElement researchButton = driver.findElement(By.cssSelector("button[aria-controls='collapse-6-4-6'"));
+        // Scroll to the button
+        actions.scrollToElement(researchButton).perform();
+        // Wait until it is clickable, then click
+        researchButton = wait.until(ExpectedConditions.elementToBeClickable(researchButton));
+        researchButton.click();
+
+        // Wait until the opened container is visible
+        WebElement container = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("collapse-6-4-6")));
+        //Locate fields in which research is conducted by css selector, only picking the li items inside ul
+        List<WebElement> researchFields = container.findElements(By.cssSelector("li ul li"));
+        // For each field, print out the text
+        for (WebElement field : researchFields) {
+            String text = field.getText();
+            System.out.println(text);
+        }
 
         driver.quit();
     }
