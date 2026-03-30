@@ -2,6 +2,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -14,7 +16,8 @@ public class DriverApp {
         // Open browser at url
         driver.get("https://www.playtechpeople.com");
 
-        //Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        // Explicit wait for elements to become visible/interactable
+        Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(2));
 
         // Finding the div element in which the Teams are
         WebElement teamsColumn = driver.findElement(By.xpath("//h6[text()='Teams']/parent::div")); //possibly not the best approach, but works for me now, might change later
@@ -25,6 +28,18 @@ public class DriverApp {
             String text = team.getText();
             System.out.println(text);
         }
+
+        // Find "Life at Playtech"
+        WebElement lifeAtPlaytech = driver.findElement(By.id("menu-item-49"));
+
+        // Actions class for mouse interactions
+        Actions actions = new Actions(driver);
+        // Move cursor to "Life at Playtech"
+        actions.moveToElement(lifeAtPlaytech).perform();
+        // Wait until "Who we are" becomes visible, then click it to navigate
+        WebElement whoWeAre = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("menu-item-47")));
+        whoWeAre.click();
+
 
         driver.quit();
     }
