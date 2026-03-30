@@ -12,9 +12,11 @@ import java.util.List;
 public class DriverApp {
     public static void main(String[] args) {
 
-        // Writer write info into a .txt file
+        // Helper to write info into a .txt file
         SaveToFile writer = new SaveToFile("results.txt");
+
         WebDriver driver = new ChromeDriver();
+
         // Open browser at url
         driver.get("https://www.playtechpeople.com");
 
@@ -24,7 +26,7 @@ public class DriverApp {
         // Wait for cookie popup to become clickable and choose Allow selection
         WebElement cookies = wait.until(ExpectedConditions.elementToBeClickable(By.id("CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection")));
         cookies.click();
-        
+
         // Finding the div element in which the Teams are
         WebElement teamsColumn = driver.findElement(By.xpath("//h6[text()='Teams']/parent::div"));
         // Locate teams by cssSelector
@@ -38,9 +40,9 @@ public class DriverApp {
             writer.write(text);
             System.out.println(text);
         }
-
         // Write empty line
         writer.write("");
+
         // Find "Life at Playtech"
         WebElement lifeAtPlaytech = driver.findElement(By.id("menu-item-49"));
 
@@ -66,6 +68,7 @@ public class DriverApp {
         actions.scrollToElement(container).perform();
         //Locate fields in which research is conducted by css selector, only picking the li items inside ul
         List<WebElement> researchFields = container.findElements(By.cssSelector("li ul li"));
+
         writer.write("Research fields: ");
         System.out.println("Research fields: ");
         // For each field, write to file and print out the text
@@ -76,20 +79,17 @@ public class DriverApp {
         }
         writer.write("");
 
-        // Longer wait to prevent stale items
-        Wait<WebDriver> wait1 = new WebDriverWait(driver, Duration.ofSeconds(5));
-
         //Locate All Jobs button, wait, click it
         WebElement jobsButton = driver.findElement(By.className("yellow-button"));
-        jobsButton = wait1.until(ExpectedConditions.elementToBeClickable(jobsButton));
+        jobsButton = wait.until(ExpectedConditions.elementToBeClickable(jobsButton));
         jobsButton.click();
 
-        // Find all job offers in estonia
+        // Find all job offers in Estonia
         List<WebElement> jobOffers = driver.findElements(By.cssSelector("a[data-location='estonia']"));
 
         // List of job offer urls
         List<String> jobUrl = new ArrayList<>();
-        // Add url's to the list
+        // Add urls to the list
         for (WebElement offer : jobOffers) {
             String link = offer.getAttribute("href");
             // Not adding null values or duplicate links
@@ -98,7 +98,7 @@ public class DriverApp {
             }
         }
 
-        // Variables to keep track of how many Tallinn and Tartu links there are
+        // Variables to keep track of Tallinn and Tartu links
         String tallinn = null;
         String tartu = null;
 
@@ -116,21 +116,23 @@ public class DriverApp {
             WebElement location = shadowRoot.findElement(By.className("c-spl-job-location__place"));
             String city = location.getText().toLowerCase();
 
-            // Print out and write to file the link for a job in Tartu
+            // Print out and write to file the link for the first job in Tartu
             if (city.contains("tartu") && !city.contains("tallinn") && tartu == null) {
                 tartu = url;
                 writer.write("Tartu: " + url);
                 System.out.println(url);
             }
 
-            // Print out and write to file the link for a job in Tallinn
+            // Print out and write to file the link for the first job in Tallinn
             if (city.contains("tallinn") && !city.contains("tartu") && tallinn == null) {
                 tallinn = url;
                 writer.write("Tallinn: " +url);
                 System.out.println(url);
             }
         }
+        // Close writer
         writer.close();
+        //Quit WebDriver to close browser
         driver.quit();
     }
 }
