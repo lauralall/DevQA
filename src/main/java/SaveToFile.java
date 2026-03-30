@@ -15,7 +15,7 @@ public class SaveToFile {
      */
     public SaveToFile(String fileName){
         try {
-            bufferedWriter = new BufferedWriter(new FileWriter(fileName, true));
+            bufferedWriter = new BufferedWriter(new FileWriter(fileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

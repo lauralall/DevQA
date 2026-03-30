@@ -21,6 +21,10 @@ public class DriverApp {
         // Explicit wait for elements to become visible/interactable
         Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(2));
 
+        // Wait for cookie popup to become clickable and choose Allow selection
+        WebElement cookies = wait.until(ExpectedConditions.elementToBeClickable(By.id("CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection")));
+        cookies.click();
+        
         // Finding the div element in which the Teams are
         WebElement teamsColumn = driver.findElement(By.xpath("//h6[text()='Teams']/parent::div"));
         // Locate teams by cssSelector
