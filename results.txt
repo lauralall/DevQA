@@ -1,0 +1,21 @@
+Teams: 
+Customer Support
+Data
+Finance
+Information Technology
+IT
+Legal & Compliance
+Marketing
+Product
+QA
+Safety & Security
+Security
+
+Research fields: 
+risk analysis using data derived from the use of BetBuddy
+investigating product related risks such as slot game volatility, use of autoplay and the effects of stake limits
+encouraging the use of safer gambling tools
+
+Available job offers: 
+Tartu: https://jobs.smartrecruiters.com/Playtech/744000113153077--operations-engineer
+Tallinn: https://jobs.smartrecruiters.com/Playtech/744000116248617-c-developer

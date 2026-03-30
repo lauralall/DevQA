@@ -11,6 +11,9 @@ import java.util.List;
 
 public class DriverApp {
     public static void main(String[] args) {
+
+        // Writer write info into a .txt file
+        SaveToFile writer = new SaveToFile("results.txt");
         WebDriver driver = new ChromeDriver();
         // Open browser at url
         driver.get("https://www.playtechpeople.com");
@@ -19,15 +22,21 @@ public class DriverApp {
         Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(2));
 
         // Finding the div element in which the Teams are
-        WebElement teamsColumn = driver.findElement(By.xpath("//h6[text()='Teams']/parent::div")); //possibly not the best approach, but works for me now, might change later
+        WebElement teamsColumn = driver.findElement(By.xpath("//h6[text()='Teams']/parent::div"));
         // Locate teams by cssSelector
         List<WebElement> teams = teamsColumn.findElements(By.cssSelector("li.menu-item-type-custom"));
-        // For each team, print out the text (team name)
+        // Write into file
+        writer.write("Teams: ");
+        System.out.println("Teams: ");
+        // For each team, write into file and print out team name
         for (WebElement team : teams) {
             String text = team.getText();
+            writer.write(text);
             System.out.println(text);
         }
 
+        // Write empty line
+        writer.write("");
         // Find "Life at Playtech"
         WebElement lifeAtPlaytech = driver.findElement(By.id("menu-item-49"));
 
@@ -49,13 +58,19 @@ public class DriverApp {
 
         // Wait until the opened container is visible
         WebElement container = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("collapse-6-4-6")));
+        // Scroll to the container
+        actions.scrollToElement(container).perform();
         //Locate fields in which research is conducted by css selector, only picking the li items inside ul
         List<WebElement> researchFields = container.findElements(By.cssSelector("li ul li"));
-        // For each field, print out the text
+        writer.write("Research fields: ");
+        System.out.println("Research fields: ");
+        // For each field, write to file and print out the text
         for (WebElement field : researchFields) {
             String text = field.getText();
+            writer.write(text);
             System.out.println(text);
         }
+        writer.write("");
 
         // Longer wait to prevent stale items
         Wait<WebDriver> wait1 = new WebDriverWait(driver, Duration.ofSeconds(5));
@@ -83,6 +98,8 @@ public class DriverApp {
         String tallinn = null;
         String tartu = null;
 
+        writer.write("Available job offers: ");
+        System.out.println("Available job offers: ");
         // Loop through each link
         for (String url : jobUrl) {
             driver.get(url);
@@ -95,19 +112,21 @@ public class DriverApp {
             WebElement location = shadowRoot.findElement(By.className("c-spl-job-location__place"));
             String city = location.getText().toLowerCase();
 
-            // Print out the link for a job in Tartu
+            // Print out and write to file the link for a job in Tartu
             if (city.contains("tartu") && !city.contains("tallinn") && tartu == null) {
                 tartu = url;
+                writer.write("Tartu: " + url);
                 System.out.println(url);
             }
 
-            // Print out the link for a job in Tallinn
+            // Print out and write to file the link for a job in Tallinn
             if (city.contains("tallinn") && !city.contains("tartu") && tallinn == null) {
                 tallinn = url;
+                writer.write("Tallinn: " +url);
                 System.out.println(url);
             }
         }
-
+        writer.close();
         driver.quit();
     }
 }
