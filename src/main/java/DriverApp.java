@@ -1,6 +1,4 @@
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -8,6 +6,7 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DriverApp {
@@ -56,6 +55,57 @@ public class DriverApp {
         for (WebElement field : researchFields) {
             String text = field.getText();
             System.out.println(text);
+        }
+
+        // Longer wait to prevent stale items
+        Wait<WebDriver> wait1 = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        //Locate All Jobs button, wait, click it
+        WebElement jobsButton = driver.findElement(By.className("yellow-button"));
+        jobsButton = wait1.until(ExpectedConditions.elementToBeClickable(jobsButton));
+        jobsButton.click();
+
+        // Find all job offers in estonia
+        List<WebElement> jobOffers = driver.findElements(By.cssSelector("a[data-location='estonia']"));
+
+        // List of job offer urls
+        List<String> jobUrl = new ArrayList<>();
+        // Add url's to the list
+        for (WebElement offer : jobOffers) {
+            String link = offer.getAttribute("href");
+            // Not adding null values or duplicate links
+            if (link != null && !jobUrl.contains(link)) {
+                jobUrl.add(link);
+            }
+        }
+
+        // Variables to keep track of how many Tallinn and Tartu links there are
+        String tallinn = null;
+        String tartu = null;
+
+        // Loop through each link
+        for (String url : jobUrl) {
+            driver.get(url);
+
+            // Find shadow host element and access shadow root
+            WebElement shadowHost = driver.findElement(By.cssSelector("spl-job-location"));
+            SearchContext shadowRoot = shadowHost.getShadowRoot();
+
+            // Find job location and save it as String
+            WebElement location = shadowRoot.findElement(By.className("c-spl-job-location__place"));
+            String city = location.getText().toLowerCase();
+
+            // Print out the link for a job in Tartu
+            if (city.contains("tartu") && !city.contains("tallinn") && tartu == null) {
+                tartu = url;
+                System.out.println(url);
+            }
+
+            // Print out the link for a job in Tallinn
+            if (city.contains("tallinn") && !city.contains("tartu") && tallinn == null) {
+                tallinn = url;
+                System.out.println(url);
+            }
         }
 
         driver.quit();
